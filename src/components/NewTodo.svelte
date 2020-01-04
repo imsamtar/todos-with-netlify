@@ -34,7 +34,7 @@
                 todos: JSON.stringify($todos)
             },
             headers: {
-                'Authentication': `Bearer ${netlifyIdentity.currentUser().token.access_token}`,
+                'Authentication': `Bearer ${$netlifyIdentity.currentUser().token.access_token}`,
                 'Content-Type': 'application/json'
             }
         }))).todos;
