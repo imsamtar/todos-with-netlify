@@ -6,6 +6,7 @@
 </div>
 
 <script>
+    import {afterUpdate} from 'svelte';
     import NewTodo from './NewTodo.svelte';
     import Todo from './Todo.svelte';
 
