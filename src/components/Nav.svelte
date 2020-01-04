@@ -10,6 +10,13 @@
 		</div>
 		<ul class="navbar-menu navbar-end" class:is-active={isActive} on:click={switchNavbar}>
 			<li class="navbar-item"><a class="has-text-white" class:has-text-bold='{segment === 'about'}' href='about'>about</a></li>
+			{#if $netlifyIdentity}
+				{#if $netlifyIdentity.currentUser()}
+					<li class="navbar-item"><span class="has-text-white has-cursor-pointer" on:click={login}>logout</span></li>
+				{:else}
+					<li class="navbar-item"><span class="has-text-white has-cursor-pointer" on:click={login}>login</span></li>
+				{/if}
+			{/if}
 		</ul>
 	</div>
 </nav>
@@ -27,10 +34,35 @@ ul.is-active > li > a {
 </style>
 
 <script>
+	import {onMount} from 'svelte';
+	import {netlifyIdentity} from '../store.js';
+
 	export let segment;
 
 	let isActive = false;
 	function switchNavbar(){
 		isActive=!isActive;
+	}
+	onMount(() => {
+		initNetlifyIdentity();
+	});
+	function initNetlifyIdentity(){
+		$netlifyIdentity = window.netlifyIdentity;
+		if(!$netlifyIdentity) setTimeout(initNetlifyIdentity, 500);
+		else {
+			$netlifyIdentity.on('close', () => $netlifyIdentity = $netlifyIdentity);
+			$netlifyIdentity.on('login', () => {
+				$netlifyIdentity = $netlifyIdentity;
+				$netlifyIdentity.close();
+			});
+			$netlifyIdentity.on('logout', () => {
+				$netlifyIdentity = $netlifyIdentity;
+				$netlifyIdentity.close();
+			});
+		}
+	}
+
+	async function login(){
+		$netlifyIdentity.open();
 	}
 </script>
