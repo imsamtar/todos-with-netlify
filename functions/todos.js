@@ -28,7 +28,6 @@ exports.handler = function(event, context, callback){
             users.push({id: user.sub, todos: []});
             index = users.length - 1;
         }
-
         callback(null, {
             statusCode: 200,
             body: JSON.stringify(users[index]),
